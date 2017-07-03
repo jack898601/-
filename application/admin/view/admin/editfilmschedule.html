@@ -1,0 +1,102 @@
+{extend name="admin/index"}
+
+{block name="search"}
+{/block}
+
+{block name="main"}
+
+<h1>修改排片</h1>
+<form class='mt20'>
+<div class='container-fluid'>
+<input type="hidden" id="id" form-id="{$data.id}">
+  <div class="form-group col-xs-4">
+    <label for="addressname">影院名</label>
+    <select name='addressname'>
+      {foreach $addresslist as $k => $v}
+      <option value ="{$k}" {if condition="$v eq $data['name']"}selected{/if}>{$v}</option>
+      {/foreach}
+    </select>
+  </div>
+</div>
+
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="filmname">影片名</label>
+    <select name="filmname">
+      {foreach $filmlist as $k => $v}
+      <option value ="{$k}" {if condition="$v eq $data['filmname']"}selected{/if}>{$v}</option>
+      {/foreach}
+    </select>
+  </div>
+</div>
+
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="playdate">播放日期</label>
+    <input type="text" class="form-control" name="playdate" value="{$data.date}">
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="playtime">播放时间</label>
+    <input type="text" class="form-control" name="playtime" value="{$data.playtime}">
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="hallnum">放映大厅号</label>
+    <input type="text" class="form-control" name="hallnum" value="{$data.hall_num}">
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="price">票价</label>
+    <input type="text" class="form-control" name="price" value="{$data.price}">
+  </div>
+</div>
+
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+  <button type="submit" class="btn btn-default mt20 update-btn">确认</button>
+</div>
+</div>
+</form>
+{/block}
+
+
+{block name="js"}
+<script>
+  // $(".filmlist").addClass('active');
+
+    $(function(){
+        $('.update-btn').click(function(){
+          var data = $('form').serializeArray();
+          var id = $('#id').attr('form-id');
+          updateajax(data, id);
+          return false;
+        })
+    })
+
+    function updateajax(data, id){
+      $.ajax({
+          type :'put',
+          url:'/schedule/'+id,
+          dataType :'json',
+          data:{
+            addressname: data[0].value,
+            filmname: data[1].value,
+            playdate: data[2].value,
+            playtime:data[3].value,
+            hallnum: data[4].value,
+            price: data[5].value
+          },
+          success:function(data){
+            alert(data.info);
+            window.location.href="/schedule/";
+          }
+      })
+    }
+
+    
+</script>
+{/block}

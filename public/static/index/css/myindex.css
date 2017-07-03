@@ -1,0 +1,30 @@
+.imgs
+{
+    padding-top: 30px;
+}
+
+.ddb
+{
+    margin: 20px;
+    border-bottom: 1px solid #ccc;
+    width: 400px;
+    float: right;
+}
+
+.ddb img
+{
+    padding-right: 40px;
+    float: left;
+}
+
+.sit
+{
+    color:red;
+    font-size: 20px;
+}
+
+.index_hr
+{
+    width:1140px;
+}
+

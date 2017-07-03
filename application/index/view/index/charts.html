@@ -1,0 +1,130 @@
+{extend name="index/index"}
+
+{block name="weather"}
+{/block}
+
+{block name="main"}
+<div id="content">
+    <div class="container">
+        <div class="row">
+            <div class="span3">
+                <div class="account-container">
+                    <div class="account-avatar">
+                        {if $result['icon'] == null}
+                        <img src="static/index/images/8.jpg" class="thumbnail" />
+                        {else}
+                        <img src="static/index/images/{$result['icon']}" class="thumbnail" />
+                        {/if}
+                    </div> <!-- /account-avatar -->
+                    <div class="account-details">
+                        <span class="account-name">{:session('name', '', 'index')}</span>
+                        <span class="account-role">贵宾级别</span>
+                    </div> <!-- /account-details -->
+                </div> <!-- /account-container -->
+                <hr/>
+                <ul id="main-nav" class="nav nav-tabs nav-stacked">
+                    <li>
+                        <a href="./PersonalCenter.html">
+                            <i class="icono-user"></i>
+                            个人资料
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./faq.html">
+                            <i class="icono-gear spin"></i>
+                            修改密码
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./plans.html">
+                            <i class="icono-market"></i>
+                            我的收藏
+                            <span class="label label-warning pull-right"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./grid.html">
+                            <i class="icono-flickr"></i>
+                            我的评论
+                            <span class="label label-warning pull-right"></span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="{:url('index/User/charts')}">
+                            <i class="icono-sync spin"></i>
+                            订单管理
+                        </a>
+                    </li>
+                </ul>
+                <hr/>
+                <div class="sidebar-extra">
+                    <p>阿里影业宣布，旗下的互联网售票业务平台“淘宝电影”正式将品牌更名为“淘票票”，并宣布与大麦网正式达成战略合作，致力打造成国内最大的泛娱乐产业营销平台。
+                        此次阿里影业将淘宝电影更名为淘票票，表明淘宝电影的战略方向有了重大升级，业务范畴由电影扩展至演出、体育等泛娱乐业，自身定位由线上售票平台转变为具备线上线下双向宣发能力的营销平台。未来，淘票票将向泛娱乐业开放包括线上售票、精准营销、用户互动等能力，围绕票务积极拓展更多的应用场景，帮助合作伙伴开展线上线下结合的整合营销，为消费者提供更便捷的服务。[1]
+                        据悉，淘票票业务于2014年底上线，目前已成为内地最主要的电影线上售票平台之一，提供全国超过5000家影院线上选座购票服务，覆盖影院票房约占全国总票房95%；出票数额也由2015年初日均出票3万张跃升至目前单日出票峰值达300万张，一年半内增幅达100倍。</p>
+                </div> <!-- .sidebar-extra -->
+                <br/>
+            </div> <!-- /span3 -->
+            
+            <div class="span9" style="margin-top: 95px;width: 790px">
+                <h1 class="page-title">
+                    <i class="icono-sync"></i>
+                    订单中心
+                </h1>
+                <div class="stat-container">
+                <div class="widget widget-table">
+                    <div class="widget-header">
+                        <i class="icono-barChart"></i>
+                        <h3>所有订单</h3>
+                    </div> <!-- /widget-header -->
+                    <div class="widget-content">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>电影名称</th>
+                                <th>价格</th>
+                                <th>地址</th>
+                                <th>影院名称</th>
+                                <th>放映时间</th>
+                                <th>影厅</th>
+                                <th>座位号</th>
+                                <th>取票码</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {foreach $order as $k=> $v}
+                            <tr>
+                                <td>{$k+1}</td>
+                                <td>{$v.filmname}</td>
+                                <td>{$v.price} 元</td>
+                                <td>{$v.address}</td>
+                                <td>{$v.name}</td>
+                                <td>{$v.date} {$v.playtime}</td>
+                                <td>{$v.hall_num}号厅</td>
+                                <td>{$v.seatnum}</td>
+                                <td>{$v.ticket_number}</td>
+                                {if $v.status == 0}
+                                <td >未取票</td>
+                                {else}
+                                <td>已取票</td>
+                                {/if}
+                                <td class="rm_order" order_id="{$v.id}" style="cursor: pointer"><a href="{:url('index/user/rm_order')}?id={$v.id}">删除</a></td>
+                            </tr>
+                            {/foreach}
+                            </tbody>
+                        </table>
+                    </div> <!-- /widget-content -->
+                </div> <!-- /widget -->
+            </div> <!-- /span9 -->
+        </div> <!-- /row -->
+            {$page}
+        </div>
+    </div> <!-- /container -->
+</div> <!-- /content -->
+
+
+<script>
+</script>
+{/block}

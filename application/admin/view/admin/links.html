@@ -1,0 +1,142 @@
+{extend name="admin/index"}
+
+{block name="search"}
+<form action="{:url('admin/search/linkssearch')}" class="navbar-form navbar-right" >
+    <input type="text" class="form-control" name="linkname" placeholder="网站名">
+    <input type="submit" class="btn" value="搜索">
+</form>
+{/block}
+{block name="main"}
+
+
+<h2 class="sub-header">链接管理</h2>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>链接网站名</th>
+            <th>链接地址</th>
+            <th>关系</th>
+            <th>管理</th>
+        </tr>
+        </thead>
+        {foreach $links as $v}
+        <tr>
+            <td>{$v.linkname}</td>
+            <td>{$v.linkurl}</td>
+            {if $v.contact == 1}
+            <th>合作伙伴</th>
+            {else}
+            <th>友情链接</th>
+            {/if}
+            <td>
+                <button class='btn text-info btn-sm edit-btn' edit-links="{$v.id}">修改</button>
+                <button class='btn btn-danger btn-sm del-btn' det-links="{$v.id}">删除</button>
+            </td>
+        </tr>
+        <tr class="edit-{$v.id}" style="display: none">
+            <form action="{:url('admin/quicklinks/editlinks')}">
+                <input type="hidden" class="ed-links" name="id" vlaue="">
+                    <td>
+                       网站名 : <input type="text" name="linkname" value="{$v.linkname}">
+                    </td>
+                    <td>
+                        网址 : <input type="text" name="linkurl" value="{$v.linkurl}">
+                    </td>
+                    <td>
+                        合作<input type="radio" value="1" name="contact" checked>
+                        友情<input type="radio" value="2" name="contact">
+                    </td>
+                    <td>
+                        显示<input type="radio" value="1" name="status">
+                        隐藏<input type="radio" value="2" name="status" checked>
+                    </td>
+                    <td>
+                        <button class='btn btn-success btn-sm keep' det-links="{$v.id}">保存</button>
+                    </td>
+            </form>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+    <!--分页-->
+    {$page}
+    <br>
+    <button class="addlinks">增加链接</button>
+</div>
+</div>
+
+{/block}
+{block name="js"}
+<script>
+    // 给当前选中的li添加标识
+    $(".links").addClass('active');
+    
+    // 删除操作
+    $(function(){
+        $('.del-btn').click(function(){
+            if(confirm('确定要删除该链接?')){
+                var obj = $(this).parents('tr');
+                var id = $(this).attr('det-links');
+                detlinks(id);
+                obj.remove();
+            }
+        })
+    })
+    
+    // 删除函数
+    function detlinks(id){
+        $.ajax({
+           type : 'get',
+            url : 'admin/quicklinks/delete',
+            data : {id :id},
+            success :function(){
+                
+            }
+        });
+    }
+    
+    // 修改
+    $(function(){
+        $('.edit-btn').click(function(){
+                var id = $(this).attr('edit-links');
+                var edlinks = $('.ed-links').val(id);
+                var over =  $('.edit-'+id).attr('style', 'display : block');
+        })
+    })
+    
+    //保存
+    $(function(){
+        $('.keep').click(function(){
+            var tr = $(this).parents('tr');console.log(tr)
+            tr.attr('style', 'display : block');
+        })
+    })
+    
+    //获取增加的数据
+    $(function(){
+        $('.addlinks').click(function(){
+            var linkname = prompt("链接网站名");
+            var linkurl = prompt("链接地址");
+            if (linkname != '' && linkurl != ''){
+                addlinks(linkname, linkurl);
+            }else{
+                alert('不能为空');
+            }
+            
+        })
+    })
+    //执行添加到数据库
+    function addlinks(w, q){
+        $.ajax({
+            type : 'get',
+            url : 'admin/quicklinks/addlinks',
+            data : {linkname :w , linkurl :q},
+            success :function(){
+            
+            }
+        });
+    }
+
+</script>
+{/block}

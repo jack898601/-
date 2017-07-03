@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>淘票票</title>
+    
+    {block name="css/js"}
+    <link rel="icon" href="../../favicon.ico">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/index/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/static/index/js/html5shiv.min.js"></script>
+    <script src="/static/index/js/respond.min.js"></script>
+    <!--myindex.css-->
+    <link rel="stylesheet" href="/static/index/css/myindex.css">
+    <script src="/static/index/js/jquery.min.js"></script>
+    <script src="/static/index/js/bootstrap.min.js"></script>
+    <link href="static/index/css/bootstrap-responsive.min.css" rel="stylesheet" />
+    <link href="static/index/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="static/index/css/icono.min.css">
+    <link href="static/index/css/adminia.css" rel="stylesheet" />
+    <link href="static/index/css/adminia-responsive.css" rel="stylesheet" />
+    <link href="static/index/css/pages/dashboard.css" rel="stylesheet" />
+    <script src="static/index/js/jquery-1.7.2.min.js"></script>
+    <script src="static/index/js/excanvas.min.js"></script>
+    <script src="static/index/js/jquery.flot.js"></script>
+    <script src="static/index/js/jquery.flot.pie.js"></script>
+    <script src="static/index/js/jquery.flot.orderBars.js"></script>
+    <script src="static/index/js/jquery.flot.resize.js"></script>
+    <script src="static/index/js/bootstrap.js"></script>
+    <script src="static/index/js/charts/bar.js"></script>
+    {/block}
+    <style>
+        footer{
+            background-color: #3A3226;
+            padding:50px;
+        }
+        footer a,footer h4,a:hover,footer div{ 
+            text-decoration:none; 
+            color:#BDC0BA;
+            transition: 0.3s linear;
+        }
+        footer a:hover, footer h4:hover{
+            color:white;
+        }
+        footer h4{
+            color: #FCFAF2;
+        }
+    </style>
+</head>
+<!-- NAVBAR
+================================================== -->
+<body>
+<div class="navbar-wrapper">
+    <!--<div class="container">-->
+        <!--导航栏-->
+        <nav class="navbar navbar-inverse navbar-static-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{:url('index/index/index')}">淘票票</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="{:url('index/index/index')}">首页</a></li>
+                        <li><a href="{:url('index/cinema/index')}">影片</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">点我<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                {if session('name', '','index') != null}
+                                <li>
+                                    <a href="{:url('index/index/PersonalCenter')}">尊敬的<b style="color: red;">{:session('name', '', 'index')}</b>用户您好
+                                    </a>
+                                </li>
+                                <li><a href="{:url('index/user/loginout')}">退出</a></li>
+                                {else}
+                                <li><a href="{:url('index/index/login')}">登录</a></li>
+                                <li><a href="{:url('index/index/login')}">注册</a></li>
+                                {/if}
+                                <li><a href="#">联系电话</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li class="dropdown-header">合作伙伴</li>
+                                <li><a href="http://www.taobai.com">淘宝购物</a></li>
+                                <li><a href="http://www.ali.com">阿里巴巴</a></li>
+                            </ul>
+                        </li>
+                        {block name="weather"}
+                        <li><a>{$obj->city} : {$obj->status1},{$obj->temperature2}-{$obj->temperature1}°C</a></li>
+                        {/block}
+                        <li style="float: right">
+                            <form class="navbar-form navbar-right" action="{:url('index/search/index')}">
+                                <input type="text" class="form-control" placeholder="影片" name="contents">
+                                <input type="submit" class="btn" value="搜索">
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!--End-->
+    </div>
+<!--</div>-->
+{block name="main"}
+<!-- 轮廓图
+================================================== -->
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        {foreach $imgs as $k=> $v}
+        <li data-target="#myCarousel" data-slide-to="{$k}"></li>
+        {/foreach}
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <img class="first-slide" src="/static/index/images/index.jpg">
+        </div>
+        {foreach $imgs as $v}
+        <div class="item">
+            <img class="second-slide" src="/static/index/images/{$v.bannerurl}" style="width: 1350px;height: 405px">
+        </div>
+        {/foreach}
+        
+    </div>
+    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div><!-- /.carousel -->
+
+
+<div style="width: 1000px;height: 30px"></div>
+
+<div class="container marketing">
+    <h2>电影新闻</h2>
+    {foreach $news as $vol}
+    <div>
+        <p>
+            <span>
+                <a href="{$vol->link}">
+                    <h4>{$vol->title}</h4>
+                </a>
+            </span>
+            <p>
+                {$vol->desc}
+            </p>
+        </p>
+    </div>
+    {/foreach}
+</div>
+<!-- Marketing messaging and featurettes
+================================================== -->
+<!-- Wrap the rest of the page in another container to center all the content. -->
+
+<div class="container marketing">
+    <hr class="featurette-divider">
+    <h2 style="color: red">经典电影</h2>
+    
+    {foreach $notice as $vl}
+    <div class="row featurette">
+        <div class="col-md-5">
+            <img class="featurette-image img-responsive center-block" src="/static/index/images/{$vl.noticeurl}" style="width: 300px;height: 300px">
+        </div>
+        <div class="col-md-7">
+            <h2 class="featurette-heading">{$vl.noticename}</h2>
+            <p class="lead"><h5>{$vl.notice}</h5></p>
+        </div>
+    </div>
+    
+    <hr class="featurette-divider">
+    {/foreach}
+
+{/block}
+    <!-- FOOTER -->
+    <hr class="index_hr">
+</div><!-- /.container -->
+    <footer class="container-fluid">
+    <div class="container">
+        <div class="row footerContainer">
+            <div class="col-xs-12 col-sm-3">
+                <h4>帮助中心</h4>
+                <div class="footerLinks">
+                    <ul class="list-unstyled">
+                        <li><a href="#">账号管理</a></li>
+                        <li><a href="#" target="_blank">订票指南</a></li>
+                        <li><a href="#" target="_blank">订单操作</a></li>
+                    </ul>
+                </div>
+                
+            </div>
+            <div class="col-xs-12 col-sm-3">
+                <h4>友情链接</h4>
+                <div class="footerLinks">
+                    <ul class="list-unstyled">
+                        {foreach :session('links', '', 'index') as $v}
+                        <li><a href="http://{$v.linkurl}" target="_blank">{$v.linkname}</a></li>
+                        {/foreach}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-3">
+                <h4>关于我们</h4>
+                <div class="footerLinks">
+                    <p class="margin-bottom-15">静安区,
+                        <br /> 万荣1888弄, F栋
+                    <p><span class="callus">Call us:</span> <a href="#">021-33920222</a></p>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-3 hidden-xs">
+                <h4>加入我们</h4>
+                <form class="newsletter_subscription" novalidate="novalidate" id="footerNewsletterSubscribe" method="post">
+                    <div class="inputField signupContainer">
+                        <input type="email" class="col-xs-12" id="email_address_footer" name="" placeholder="您的电话">
+                        <div class="error-message" id="footer-error"></div>
+                        <button type="button" class="getStartedButton" id="footerPositiveSubscribe">提交</button>
+                        <div class="info-message"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="copyrightDetails">
+            <div class="row">
+                <div class="copyrightText col-xs-12 col-sm-6">
+                    Copyright &copy; 淘票票 All rights reserved
+                </div>
+            <!-- 图标链接-->
+                <div class="socialIcons col-xs-12 col-sm-6">
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="#" target="_blank" class="footerSocialOne"></a>
+                        </li>
+                        <li>
+                            <a href="#"></a>
+                        </li>
+                        <li>
+                            <a href="#"></a>
+                        </li>
+                    </ul>
+                </div>
+            <!-- 图标链接结束-->
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+{block name="js"}
+{/block}
+
+
+</body>
+</html>

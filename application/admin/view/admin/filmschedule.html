@@ -1,0 +1,82 @@
+{extend name="admin/index"}
+
+{block name="search"}
+{/block}
+
+{block name="main"}
+    <h1>排片表</h1>
+    <table class='table table-hover'>
+        <tr>
+            <th>#</th>
+            <th>上映电影</th>
+            <th>影院地址</th>
+            <th>大厅号</th>
+            <th>日期</th>
+            <th>票价</th>
+            <th></th>
+        </tr>
+        {foreach $list as $v}
+            <tr class='trinfo'>
+                <td>{$v.id}</td>
+                <td>{$v.filmname}</td>
+                <td>{$v.name}</td>
+                <td>{$v.hall_num}#</td>
+                <td>{$v.date}</td>
+                <td>{$v.price} 元</td>
+                <td>
+                    <div class="dropdown">
+                      <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> 
+                        操作<span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li class='del-btn' data-id="{$v.id}"><a href='#'>删除</a></li>
+                        <li><a href="{:url('admin/filmschedule/edit',['id'=>$v.id])}">编辑</a></li>
+                      </ul>
+                    </div>
+                </td>
+            </tr>
+        {/foreach}
+    </table>
+
+    {$page}
+
+{/block}
+
+{block name="js"}
+<script>
+    $(".filmschedule").addClass('active');
+
+    $(function(){
+        // 删除操作
+        $('.del-btn').click(function(){
+            var id = $(this).attr('data-id');
+            if(confirm('确定要删除吗?')){
+                var obj = $(this).parents('tr');
+                delajax(id, obj);
+            }
+        })
+    })
+
+    // 删除函数
+    function delajax(id, obj){
+        $.ajax({
+            type:'delete',
+            url: '/schedule/'+id,
+            dataType:'json',
+            success:function(data){
+              if (data.status) {
+                    toastr.success(data.info);
+                    obj.remove();
+                } else {
+                    toastr.error(data.info,'FBI WARNING: ');
+                }
+            },
+            error:function(){
+                alert('ajax执行失败');
+            }
+        })
+    }
+
+    
+</script>
+{/block}

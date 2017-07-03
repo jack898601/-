@@ -1,0 +1,108 @@
+{extend name="admin/index"}
+
+{block name="search"}
+{/block}
+
+{block name="main"}
+
+<h2>新增用户</h2>
+<form class='mt20'>
+
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="name">姓名</label>
+    <input type="text" class="form-control" id="name" placeholder='请输入真实姓名'>
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="nickname">昵称</label>
+    <input type="text" class="form-control" id="nickname" placeholder='请输入昵称'>
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="phone">电话</label>
+    <input type="text" class="form-control" id="phone" placeholder='请输入电话号'>
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="pass">密码</label>
+    <input type="password" class="form-control" id="pass" placeholder='请输入密码'>
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="repass">再次输入密码</label>
+    <input type="password" class="form-control" id="repass" placeholder='再次确认密码'>
+  </div>
+</div>
+
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+      <label for="vip">是否为会员: </label>
+      <input type="radio" name="vip" value="1"> 是
+      <input type="radio" name="vip" value="0"> 非
+  </div>
+</div>
+
+<!-- <div class='.container-fluid'>
+  <div class="form-group col-xs-4">
+    <input type="file" id='uploadFile'>
+  </div>
+</div> -->
+
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <button type="submit" class="btn btn-primary mt20 create-btn">确定</button>
+    <button type="submit" class="btn btn-primary mt20 re-btn">返回</button>
+  </div>
+</div>
+
+
+</form>
+{/block}
+
+{block name="js"}
+<script>
+  
+    $(".lis li:nth-child(2)").addClass('active');
+
+    $('.create-btn').click(function(){
+        var name = $('#name').val();
+        var nickname = $('#nickname').val();
+        var pass = $('#pass').val();
+        var repass = $('#repass').val();
+        var phone = $('#phone').val();
+        var vip = $('input[name="vip"]:checked').val();
+        createajax(name, nickname, pass,repass, phone, vip);
+        return false;
+    })
+
+    $('.re-btn').click(function(){
+      window.history.back(-1);
+      return false;
+    })
+
+    function createajax(name, nickname, pass, repass,phone, vip){
+      $.ajax({
+          type:'post',
+          url:"/admin",
+          dataType :'json',
+          data:{
+            name: name,
+            nickname: nickname,
+            pass:pass,
+            phone:phone,
+            vip:vip,
+            repass:repass
+          },
+          success:function(data){
+            alert(data.info);
+            window.location.href="/admin/";
+          }
+      })
+    }
+</script>
+{/block}

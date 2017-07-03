@@ -1,0 +1,112 @@
+{extend name="admin/index"}
+{block name="search"}
+
+{/block}
+
+{block name="main"}
+
+<h2 class="sub-header">首页展示管理</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>预览</th>
+            <th>电影名</th>
+            <th>状态</th>
+            <th>介绍</th>
+            <th></th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {foreach $data as $v}
+        <tr id="banner">
+            <td><img style='width:100px;height:40px' src="/static/index/images/{$v.noticeurl}">
+            </td>
+            <form action="{:url('admin/notice/update')}">
+                <td>
+                    <textarea name="noticename"cols="15" rows="2" >{$v.noticename}</textarea>
+                </td>
+                <td>
+                    <input type="radio" name="show" value="0" checked>取消展示
+                    <input type="radio" name="show" value="1">展示
+                </td>
+                <input type="hidden" name="id" value="{$v.id}">
+                <td>
+                    <textarea name="text"cols="15" rows="2" >{$v.notice}</textarea>
+                </td>
+                <td>
+                    <input type="submit" value="保存">
+                </td>
+            </form>
+            <td>
+                <a class='del-btn btn btn-danger btn-sm' url_id="{$v.id}">删除</a>
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+</div>
+
+<div class="btn-group btn-group-justified" role="group" aria-label="...">
+    <div class="btn-group" role="group">
+        <form action="{:url('admin/notice/getnotice')}" id='postform' enctype="multipart/form-data" method="post">
+            <input type="file" name="image"/>
+            <input type="submit" value="上传" />
+        </form>
+    </div>
+</div>
+</div>
+{/block}
+{block name="js"}
+<script>
+    $('.notice').addClass('active');
+    
+    //删除封面
+    $(function(){
+        $('.btn-danger').click(function(){
+            var id = $(this).attr('url_id');
+            console.log(id)
+            alert('确认删除');
+            //封面删除
+            detbanner(id);
+            var banner = $(this).parents('tr');
+            banner.remove();
+        });
+    })
+    
+    //封面删除
+    function detbanner(id){
+        $.ajax({
+            type : 'get',
+            url : 'detnotice',
+            data : {id :id},
+            success :function(){}
+        });
+    }
+
+
+
+
+
+
+
+</script>
+{/block}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

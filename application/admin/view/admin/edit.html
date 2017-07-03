@@ -1,0 +1,97 @@
+{extend name="admin/index"}
+
+{block name="search"}
+{/block}
+
+{block name="main"}
+<h1>修改信息</h1>
+<form class='mt20'>
+<input type="hidden" id="id" form-id="{$data.id}">
+
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="name">姓名</label>
+    <input type="text" class="form-control" id="name" value="{$data.username}">
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="nickname">昵称</label>
+    <input type="text" class="form-control" id="nickname" value="{$data.nickname}">
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="pass">密码</label>
+    <input type="text" class="form-control" id="pass" value="{$data.pass}">
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="phone">电话</label>
+    <input type="text" class="form-control" id="phone" value="{$data.phone}">
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+
+    <label class="radio-inline">
+      <input type="radio" name="vip" value="1" {if $data.isvip == 1}checked{/if}> 是
+    </label>
+    <label class="radio-inline">
+      <input type="radio" name="vip" value="0" {if $data.isvip == 0}checked{/if}> 非
+    </label>
+    </div>
+</div>
+
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <button type="submit" class="btn btn-default mt20 edit-btn" >Submit</button>
+  </div>
+</div>
+
+<!-- <input type="hidden" name="_method" value="PUT" > -->
+</form>
+
+{/block}
+
+{block name="js"}
+  <script>
+
+  $(".lis li:nth-child(1)").addClass('active');
+
+  $('.edit-btn').click(function(){
+      var fid = $('#id').attr('form-id');
+      var name = $('#name').val();
+      var nickname = $('#nickname').val();
+      var pass = $('#pass').val();
+      var phone = $('#phone').val();
+      var vip = $('input[name="vip"]:checked').val();
+      editajax(fid, name, nickname, pass, phone, vip);
+      return false;
+  })
+
+  function editajax(id, name, nickname, pass, phone, vip){
+      $.ajax({
+          type :'put',
+          url:'/admin/'+id,
+          dataType :'json',
+          data: {
+              name: name,
+              nickname: nickname,
+              phone:phone,
+              vip:vip,
+              pass:pass
+          },
+          success: function(data){
+              alert(data.info);
+              window.location.href="/admin/";
+          },
+          error : function(){
+              alert(data.info);
+          }
+      })
+  }
+
+  </script>
+{/block}

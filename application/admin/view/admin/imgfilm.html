@@ -1,0 +1,99 @@
+{extend name="admin/film"}
+
+{block name="search"}
+{/block}
+
+{block name="main"}
+<!-- 此页面查到所有的海报封面-->
+    <h2 class="sub-header">电影海报管理</h2>
+    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+      <div class="btn-group" role="group">
+
+        <form action="{:url('admin/upload/upload')}" id='postform' enctype="multipart/form-data" method="post">
+            <input type="file" name="image"/>
+            <input type="hidden" name='id_film' value="{$id_film}">
+            <input type="submit" id='upload' value="上传" />
+        </form>
+        
+      </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>电影名</th>
+                    <th>预览</th>
+                    <th>地址</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {foreach $data as $v}
+                <tr>
+                    <td>{$v.id}</td>
+                    <td>{$v.filmname}</td>
+
+                    <td><img style='width:100px' src="/uploads/{$v.imgurl}"></td>
+                    <td>{$v.imgurl}</td>
+
+                    <td>
+                      
+                        {if $v.face==1} <a class='btn btn-primary btn-sm'>取消封面</a>
+                        {else} <a class='btn btn-success btn-sm'>设为封面</a>
+                        {/if}
+                      
+                        <a class='del-btn btn btn-danger btn-sm' data-id="{$v.id}" url="{$v.imgurl}">删除</a>
+                    </td>
+                </tr>
+                {/foreach}
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- <img src="/uploads/zhou-1.png" alt=""> -->
+
+
+{/block}
+
+{block name="js"}
+<script>
+    $(".filmlist").addClass('active');
+    
+    $('.del-btn').click(function(){
+        var id = $(this).attr('data-id');
+        var url = $(this).attr('url');
+        if(confirm('确定要删除该图片吗?')){
+            var obj = $(this).parents('tr');
+            delajax(id, url, obj);
+        }
+    })
+
+    // 删除操作
+    function delajax(id, url, obj){
+        $.ajax({
+            type:'get',
+            url: '/admin/upload/delete',
+            data:{
+                id:id,
+                url:url
+            },
+            dataType: 'json',
+            success:function(data){
+              if (data.status) {
+                    toastr.success(data.info);
+                    obj.remove();
+                } else {
+                    toastr.error(data.info,'FBI WARNING: ');
+                }
+            },
+            error:function(){
+                alert('ajax执行失败');
+            }
+        })
+    }
+
+
+</script>
+
+{/block}

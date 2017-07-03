@@ -1,0 +1,148 @@
+{extend name="index/index"}
+
+{block name="weather"}
+{/block}
+
+{block name="css/js"}
+  <script src="/static/index/js/jquery.min.js"></script>
+  <script src="/static/index/js/bootstrap.min.js"></script>
+  <script src="/static/index/js/jquery.seat-charts.min.js"></script>
+  <link href="/static/index/css/jquery.seat-charts.css" rel="stylesheet">
+  <!-- Bootstrap core CSS -->
+  <link href="/static/index/css/bootstrap.min.css" rel="stylesheet">
+  <script src="/static/index/js/html5shiv.min.js"></script>
+  <script src="/static/index/js/respond.min.js"></script>
+  <!--myindex.css-->
+  <link rel="stylesheet" href="/static/index/css/myindex.css">
+{/block}
+
+{block name="main"}
+<div class="container">
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">热门影片</a></li>
+    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">即将上映</a></li>
+<!--     <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>
+    <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li> -->
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane fade in active" id="home">
+
+        <!-- 影片遍历开始-->
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="row">
+                    {foreach $data as $v}
+                    <div class="col-md-4">
+                        <div class="thumbnail" style='clear:both'>
+                            <div style='float:left;'>
+                                <img alt="300x200" style='width:140px;height:200px;' src="/uploads/{$v.imgurl}" />
+                            </div>
+                            <div class='filminfo' style="margin:-18px 0 0 0;">
+                                <h3>{$v.filmname}</h3>
+                                <ol class="list-unstyled">
+                                    <li>导演 :　{$v.duration}</li>
+                                    <li><dd>主演 :　{$v.actor}</dd></li>
+                                    <li>类型 :　{$v.type}</li>
+                                    <li>时长 :　{$v.release_time} 分钟</li>
+                                    <li>国家 :　{$v.regions}</li>
+                                    <li>语言 :　{$v.language}</li>
+                                </ol>
+                                <p>
+                                    <a class="btn btn-primary" href="{:url('index/movie/index',['filmid'=>$v.id])}">现在选坐</a>
+                                    <b con_id="{$v.id}" class="btn collection">收藏</b>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+            </div>
+        </div>
+    </div><!-- 影片遍历-->
+
+    <div role="tabpanel" class="tab-pane fade" id="profile">
+        <!-- 即将上映-->
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="row">
+                    {foreach $data as $v}
+                    <div class="col-md-4">
+
+                        <div class="thumbnail">
+                            <img alt="300x200" src="http://ibootstrap-file.b0.upaiyun.com/lorempixel.com/600/200/people/default.jpg" />
+                            <div class="caption">
+                                <h3>
+                                    {$v.filmname}
+                                </h3>
+                                <ol class="list-unstyled">
+                                    <li>导演 :　{$v.duration}</li>
+                                    <li><dd>主演 :　{$v.actor}</dd></li>
+                                    <li>类型 :　{$v.type}</li>
+                                    <li>时长 :　{$v.release_time} 分钟</li>
+                                    <li>国家 :　{$v.regions}</li>
+                                    <li>语言 :　{$v.language}</li>
+                                </ol>
+                                <p>
+                                    <a class="btn btn-primary" href="#">选坐</a> <a class="btn" href="#">详情</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+            </div>
+        </div><!-- 即将上映结束-->
+
+    </div>
+    <div role="tabpanel" class="tab-pane" id="messages">...</div>
+    <div role="tabpanel" class="tab-pane" id="settings">...</div>
+  </div><!-- tab-content-->
+</div><!-- container-->
+
+
+<script>
+    //选取id
+    $(function(){
+        $('.collection').click(function(){
+            var id = $(this).attr('con_id');
+            if (!"{:session('user_id','','index')}"){
+                alert('请登录')
+            }
+            console.log("{:session('user_id','','index')}");
+            var content = $(this).html();
+            if(content == '收藏'){
+                $(this).html('取消收藏')
+                //收藏管理
+                collection(id);
+            }else{
+                $(this).html('收藏')
+            }
+        });
+    })
+    //管理收藏
+    function collection(id){
+        $.ajax({
+            type : 'get',
+            url : "{:url('index/collection/save')}",
+            data : {id :id},
+            success :function(data){
+            }
+        });
+    }
+</script>
+{/block}
+
+{block name="js"}
+<script>
+    
+
+
+
+</script>
+
+{/block}
+

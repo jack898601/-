@@ -1,0 +1,113 @@
+{extend name="admin/film"}
+
+{block name="search"}
+{/block}
+
+{block name="main"}
+<h1>修改信息</h1>
+<form class='mt20'>
+<input type="hidden" id="id" form-id="{$data.id}">
+
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="name">电影名</label>
+    <input type="text" class="form-control" id="name" value="{$data.filmname}">
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="language">语言</label>
+    <input type="text" class="form-control" id="language" value="{$data.language}">
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="duration">导演</label>
+    <input type="text" class="form-control" id="duration" value="{$data.duration}">
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="actor">演员</label>
+    <input type="text" class="form-control" id="actor" value="{$data.actor}">
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="release_time">影片时长</label>
+    <input type="text" class="form-control" id="release_time" value="{$data.release_time}">
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="type">类型</label>
+    <input type="text" class="form-control" id="type" value="{$data.type}">
+  </div>
+</div>
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+    <label for="regions">地区</label>
+    <input type="text" class="form-control" id="regions" value="{$data.regions}">
+  </div>
+</div>
+
+
+
+<div class='container-fluid'>
+  <div class="form-group col-xs-4">
+  <button type="submit" class="btn btn-default mt20 edit-btn" >Submit</button>
+</div>
+</div>
+
+
+</form>
+
+{/block}
+
+{block name="js"}
+<script>
+  $(".filmlis li:nth-child(1)").addClass('active');
+
+    $(function(){
+
+        // 编辑
+        $('.edit-btn').click(function(){
+            var fid = $('#id').attr('form-id');
+            var name = $('#name').val();
+            var language = $('#language').val();
+            var duration = $('#duration').val();
+            var actor = $('#actor').val();
+            var type = $('#type').val();
+            var regions = $('#regions').val();
+            var release_time = $('#release_time').val();
+
+            editajax(fid, name, language, duration, actor, type, regions,release_time);
+            return false;
+        })
+
+        function editajax(id, name, language, duration, actor, type, regions,release_time){
+            $.ajax({
+                type :'put',
+                url:'/adfilm/'+id,
+                dataType :'json',
+                data: {
+                    name: name,
+                    language: language,
+                    duration:duration,
+                    actor:actor,
+                    type:type,
+                    regions : regions,
+                    release_time:release_time
+                },
+                success: function(data){
+                    window.location.href="/adfilm/";
+                },
+                error : function(){
+                    alert(data.info);
+                }
+            })
+        }
+    })
+
+</script>
+{/block}

@@ -1,0 +1,41 @@
+{extend name="index/index"}
+
+{block name="weather"}
+{/block}
+
+{block name="main"}
+<!--电影院-->
+<div class="container left">
+    <ul>
+        {foreach $data as $v}
+                <div class="row col-md-3 imgs">
+                        <td>
+                            <a href="{:url('index/Movie/index')}">
+                                <img src="/static/index/images/10.jpg" style="width: 200px;height: 240px">
+                            </a>
+                        </td>
+                </div>
+                <div class="row col-md-offset-2 imgs">
+                    <p>
+                        <td class="imgs_1">影院名称 : {$v.name}</td>
+                    </p>
+                    <p>
+                        <td class="imgs_1">影院地址 : {$v.address}</td>
+                    </p>
+                    <p>
+                        <td class="imgs_1">联系电话 : {$v.phone}</td>
+                    </p>
+                    <p>
+                        <td class="imgs_1"><a href="{:url('index/Movie/index')}?id={$v.id}">热映电影</a></td>
+                    </p>
+                </div>
+        {/foreach}
+    </ul>
+</div>
+
+
+
+
+    
+</div>
+{/block}

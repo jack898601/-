@@ -1,0 +1,117 @@
+{extend name="admin/index"}
+
+{block name="search"}
+{/block}
+
+{block name="main"}
+
+<h2 class="sub-header">轮播图管理</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>预览</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {foreach $data as $v}
+        <tr id="banner">
+            <td></td>
+            <td><img style='width:100px;height:40px' src="/static/index/images/{$v.bannerurl}">
+            </td>
+            <td>
+                <a class='btn btn-primary btn-sm' url_id="{$v.id}">{if $v.face ==1}取消封面{else}设为封面{/if}</a>
+                <a class='del-btn btn btn-danger btn-sm' url_id="{$v.id}">删除</a>
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+</div>
+
+<div class="btn-group btn-group-justified" role="group" aria-label="...">
+    <div class="btn-group" role="group">
+        <form action="{:url('admin/banner/getbanner')}" id='postform' enctype="multipart/form-data" method="post">
+            <input type="file" name="image"/>
+            <input type="submit" value="上传" />
+        </form>
+    </div>
+</div>
+</div>
+{/block}
+{block name="js"}
+<script>
+    $('.banner').addClass('active');
+    //获取元素属性
+    $(function(){
+        $('.btn-primary').click(function(){
+            var id = $(this).attr('url_id');
+            var content = $(this).html();
+            
+        if(content == '取消封面'){
+            $(this).html('设为封面')
+        }else{
+            $(this).html('取消封面')
+        }
+            //封面管理
+            cancel(id, content);
+            
+        });
+    })
+    //封面管理
+    function cancel(id, content) {
+        $.ajax({
+            type: 'get',
+            url: 'admin/Banner/cancel',
+            data: {id: id ,
+                content:content
+            }
+        });
+    }
+    
+    //删除封面
+    $(function(){
+        $('.btn-danger').click(function(){
+            var id = $(this).attr('url_id');
+            alert('确认删除');
+            //封面删除
+            detbanner(id);
+            var banner = $(this).parents('tr');
+            console.log(banner)
+            banner.remove();
+        });
+    })
+    
+     //封面删除
+    function detbanner(id){
+        $.ajax({
+           type : 'get',
+            url : 'admin/Banner/detbanner',
+            data : {id :id},
+            success :function(){
+                
+            }
+        });
+    }
+    
+</script>
+{/block}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

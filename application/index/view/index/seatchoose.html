@@ -1,0 +1,146 @@
+{extend name="index/index"}
+
+{block name="weather"}
+{/block}
+
+{block name="css/js"}
+  <script src="/static/index/js/jquery.min.js"></script>
+  <script src="/static/index/js/bootstrap.min.js"></script>
+  <script src="/static/index/js/jquery.seat-charts.min.js"></script>
+  <link href="/static/index/css/jquery.seat-charts.css" rel="stylesheet">
+  <!-- Bootstrap core CSS -->
+  <link href="/static/index/css/bootstrap.min.css" rel="stylesheet">
+  <script src="/static/index/js/html5shiv.min.js"></script>
+  <script src="/static/index/js/respond.min.js"></script>
+  <!--myindex.css-->
+  <link rel="stylesheet" href="/static/index/css/myindex.css">
+  <style>
+    li{list-style:none;}
+  </style>
+
+{/block}
+
+{block name="main"}
+
+<div class="center-block">
+   <center><h2>{$rst.name} {$rst.hall_num}#厅</h2></center>
+
+   <div class="demo clearfix" style='margin:0 auto;width:700px;'>
+       <!---左边座位列表-->
+       <div id="seat_area" class=''>
+           <div class="front">屏幕</div>
+       </div>
+       <!---右边选座信息-->
+       <div class="booking_area">
+           <p>电影：<span>{$rst.filmname}</span></p>
+           <p>时间：<span>{$rst.date} {$rst.playtime}</span></p>
+           <p>座位：</p>
+           <ul id="seats_chose"></ul>
+           <p>票数：<span id="tickects_num">0</span></p>
+           <p>总价：<b>￥<span id="total_price">0</span></b></p>
+
+               <input type="hidden" id="ticketprice" value="{$rst.price}">
+               <input type="hidden" id="userid" userid="{:session('user_id', '', 'index')}">
+               <input type="hidden" id="scheduleid" scheduleid="{$rst.id}">
+               <input type="button" class="btn confirmbtn" value="确定购买"/>
+
+           <div id="legend"></div>
+       </div>
+   </div>
+</div>
+
+{/block}
+
+{block name="js"}
+<script type="text/javascript">
+    var a = <?= $choseseat; ?>;
+    var price = parseInt($('#ticketprice').val()); //电影票价
+    var seatnum = [];
+    $(function(){
+        var $cart = $('#seats_chose'), //座位区
+            $tickects_num = $('#tickects_num'), //票数
+            $total_price = $('#total_price'); //票价总额
+
+        var sc = $('#seat_area').seatCharts({
+            map: [
+                'cccccccccc',
+                'cccccccccc',
+                '__________',
+                'cccccccc__',
+                'cccccccccc',
+                'cccccccccc',
+                'cccccccccc',
+                'cccccccccc',
+                'cccccccccc',
+                'cc__cc__cc'
+            ],
+            naming: {
+                //设置行列等信息
+                top: false,
+                getLabel: function(character, row, column) {
+                    //返回座位信息 
+                    return column;
+                }
+            },
+            legend: {
+                //定义图例
+                node: $('#legend'),
+                items: [
+                    ['c', 'available', '可选座'],
+                    ['c', 'unavailable', '已售出']
+                ]
+            },
+            click: function() {
+                if (this.status() == 'available') {
+                    $('<li>' + (this.settings.row + 1) + '排' + this.settings.label + '座</li>').attr('id', 'cart-item-' + this.settings.id).data('seatId', this.settings.id).appendTo($cart);
+
+                    $tickects_num.text(sc.find('selected').length + 1); //统计选票数量
+                    $total_price.text(getTotalPrice(sc) + price);//计算票价总金额
+                    seatnum.push(this.settings.id);
+                    return 'selected';
+                } else if (this.status() == 'selected') {
+                    $tickects_num.text(sc.find('selected').length - 1);//更新票数量
+                    $total_price.text(getTotalPrice(sc) - price);//更新票价总金额
+                    $('#cart-item-' + this.settings.id).remove();//删除已预订座位
+
+                    seatnum.pop(this.settings.id);
+                    return 'available';
+                } else if (this.status() == 'unavailable') {
+                    return 'unavailable';
+                } else {
+                    return this.style();
+                }
+            }
+        });
+        // 已经被买了的座位 a
+        sc.get(a).status('unavailable');
+    });
+
+    function getTotalPrice(sc) {
+        //计算票价总额
+        var total = 0;
+        sc.find('selected').each(function() {
+            total += price;
+        });
+        return total;
+    }
+
+    $('.confirmbtn').click(function(){
+      var userid = $('#userid').attr('userid');
+      var scheduleid = $('#scheduleid').attr('scheduleid');
+      $.ajax({
+        type:'post',
+        url:'/index/seatchoose/orderbuild',
+        data:{
+          userid:userid,
+          scheduleid:scheduleid,
+          seatnum:seatnum
+        },
+        success:function(data){
+          console.log(data);
+        }
+      });
+    })
+</script>
+
+{/block}
