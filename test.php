@@ -14,7 +14,15 @@ for ($i=1; $i < $len; $i++) {
     }
 }
 var_dump($b);
-
+echo '<hr>';
+//获取最大值
+$first = $b[0];
+foreach ($b as $v) {
+    if ($v > $first) {
+        $first = $v;
+    }
+}
+echo '最大值 : '.$first;
 
 
 
